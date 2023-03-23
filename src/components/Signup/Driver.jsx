@@ -1,25 +1,47 @@
 import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 import React, { useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify';
+import { API_URL } from '../Utils/const';
 
 export default function Driver() {
   const navigate = useNavigate();
   const formRef=useRef();
-  const loginDriverMutation=useMutation({
-    mutationFn:async ()=>{
 
+  const signupDriverMutation = useMutation({
+    mutationFn: async (data) => {
+      return axios.post(API_URL + "user/", data)
     },
-    onSuccess:()=>{
-
+    onSuccess: () => {
+      toast.success("Signup successful. Redirecting to login page.");
+      setTimeout(() => {
+        navigate("/");
+      }, 3000);
     },
-    onError:()=>{
-
+    onError: (error) => {
+      console.log(error)
+      toast.error("Signup failed");
     }
   });
 
   const formSubmitHandler=(e)=>{
-    e.preventDefault()
-    // loginParentMutation.mutate();
+    e.preventDefault();
+    if (formRef.current.password.value !== formRef.current.confirmPassword.value) {
+      toast.error("Password doesnot match.");
+      return
+    }
+
+    const data = {
+      email: formRef.current.email.value,
+      fullName: formRef.current.fullName.value,
+      address: formRef.current.address.value,
+      phoneNumber: formRef.current.phoneNumber.value,
+      password: formRef.current.password.value,
+      userType: "Driver",
+      isProfileCompleted: false,
+    }
+    signupDriverMutation.mutate(data);
   }
   return (
     <div className='h-[calc(100vh-64px)]  flex justify-center items-center flex-col'>
@@ -29,7 +51,7 @@ export default function Driver() {
           <input className='w-full h-10 text-[16px] rounded-lg bg-[#EEEEEE] p-2' name='fullName' type='text' placeholder='Enter your full name'></input>
           <input className='w-full h-10 text-[16px] rounded-lg bg-[#EEEEEE] p-2' name='email' type='email' placeholder='Enter your email'></input>
           <input className='w-full h-10 text-[16px] rounded-lg bg-[#EEEEEE] p-2' name='address' type='text' placeholder='Enter your address'></input>
-          <input className='w-full h-10 text-[16px] rounded-lg bg-[#EEEEEE] p-2' name='phone' type='number' placeholder='Enter your phone number'></input>
+          <input className='w-full h-10 text-[16px] rounded-lg bg-[#EEEEEE] p-2' name='phoneNumber' type='number' placeholder='Enter your phone number'></input>
           <input className='w-full h-10 text-[16px] rounded-lg bg-[#EEEEEE] p-2' name='password' type='password' placeholder='Enter your password'></input>
           <input className='w-full h-10 text-[16px] rounded-lg bg-[#EEEEEE] p-2' name='confirmPassword' type='password' placeholder='Confirm your password'></input>
           {/* <select onChange={(e) => setSignupType(e.target.value)} className='w-full h-10 text-[16px] rounded-lg bg-[#EEEEEE] p-2'>
