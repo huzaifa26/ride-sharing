@@ -7,7 +7,7 @@ export default function BookRide() {
       <div className='w-[30%]'>
         <SetLocation />
       </div>
-      <div className='w-[70%]'></div>
+      <div className='w-[70%] p-4'>Search Rides to see results</div>
     </div>
   )
 }

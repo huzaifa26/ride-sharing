@@ -1,47 +1,27 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useId, useState } from 'react'
 import axios from 'axios';
 import { API_URL } from '../Utils/const';
 import { ReactSearchAutocomplete } from 'react-search-autocomplete'
+import AutoComplete from './AutoComplete';
 
 export default function SetLocation() {
-  const [suggestion, setSuggestion] = useState([])
-  const [pickup,setPickup]=useState(null)
-  const [dropOff,setDropOff]=useState(null)
+  const [pickup, setPickup] = useState(null);
+  const [dropOff, setDropOFf] = useState(null);
 
-  const getPlaces = (place) => {
-    axios.get(API_URL + "/places/" + place)
-      .then((res) => {
-        setSuggestion(res.data.predictions)
-      }).catch((err) => {
-        console.log(err);
-      })
+  const getpickup=(place)=>{
+    setPickup(place || null);
   }
-
-  useEffect(() => {
-    document.addEventListener("click", handleClickOutside);
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, []);
-
-  function handleClickOutside(){
-    setSuggestion([]);
+  const getdropOff=(place)=>{
+    setDropOFf(place || null);
   }
 
   return (
     <div className='m-2 h-72 w-full border-2 border-[#D7D7D7] rounded-lg p-2'>
       <h1 className='text-xl'>Book a ride</h1>
       <div className='flex flex-col gap-4 mt-4'>
-        <div className='relative'>
-          <input key={pickup} defaultValue={pickup} list="pickup" onChange={(e) => { getPlaces(e.target.value) }} className='w-full h-10 text-[16px] rounded-lg bg-[#EEEEEE] p-2' placeholder='Pickup location' />
-          {suggestion.length > 0 && <div onClick={(e)=>e.stopPropagation()} className='absolute w-[100%] bg-white overflow-hidden divide-y-2 border-2 border-[#EEEEEE] rounded-md'>
-            {suggestion.map((s) => {
-              return <option onClick={(e)=>{console.log(s.description);setPickup(s.description)}} title={s.description} className='p-2 cursor-pointer' value={s.description}>{s.description}</option>
-            })}
-          </div>}
-        </div>
-
-        <input className='w-full h-10 text-[16px] rounded-lg bg-[#EEEEEE] p-2' placeholder='Dropoff location' />
+        <AutoComplete key={useId()} getValues={getpickup}/>
+        <AutoComplete key={useId()} getValues={getdropOff}/>
+        <button style={pickup === null || dropOff === null?{cursor:"not-allowed",opacity:"0.5"}:{}} disabled={pickup === null || dropOff === null} className='h-10 w-full bg-black rounded-lg text-white font-bold hover:bg-[rgba(0,0,0,0.8)] transition-color duration-300'>Search</button>
       </div>
     </div>
   )

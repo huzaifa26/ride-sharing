@@ -17,7 +17,7 @@ export default function CompleteProfile() {
       data.id=user.id;
       return axios.put(API_URL + "user/", data)
     },
-    onSuccess: () => {
+    onSuccess: (res) => {
       toast.success("Profile completed. Redirecting to home page.");
       localStorage.setItem("user",JSON.stringify(res.data.user));
       queryClient.setQueryData(["user"], res.data.user);
