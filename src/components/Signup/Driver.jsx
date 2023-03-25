@@ -7,7 +7,7 @@ import { API_URL } from '../Utils/const';
 
 export default function Driver() {
   const navigate = useNavigate();
-  const formRef=useRef();
+  const formRef = useRef();
 
   const signupDriverMutation = useMutation({
     mutationFn: async (data) => {
@@ -15,9 +15,7 @@ export default function Driver() {
     },
     onSuccess: () => {
       toast.success("Signup successful. Redirecting to login page.");
-      setTimeout(() => {
-        navigate("/");
-      }, 3000);
+      navigate("/");
     },
     onError: (error) => {
       console.log(error)
@@ -25,7 +23,7 @@ export default function Driver() {
     }
   });
 
-  const formSubmitHandler=(e)=>{
+  const formSubmitHandler = (e) => {
     e.preventDefault();
     if (formRef.current.password.value !== formRef.current.confirmPassword.value) {
       toast.error("Password doesnot match.");
@@ -40,6 +38,7 @@ export default function Driver() {
       password: formRef.current.password.value,
       userType: "Driver",
       isProfileCompleted: false,
+      isAvailable: false,
     }
     signupDriverMutation.mutate(data);
   }
@@ -68,7 +67,7 @@ export default function Driver() {
           <input className='w-full h-10 text-[16px] rounded-lg bg-[#EEEEEE] p-2' name='address' type='text' placeholder='Enter your car name'></input>
           <input className='w-full h-10 text-[16px] rounded-lg bg-[#EEEEEE] p-2' name='address' type='text' placeholder='Enter your car model'></input>
           <input className='w-full h-10 text-[16px] rounded-lg bg-[#EEEEEE] p-2' name='address' type='text' placeholder='Enter your car registeration number'></input>*/}
-          <button className='h-10 w-full bg-black rounded-lg text-white font-bold hover:bg-[rgba(0,0,0,0.8)] transition-color duration-300 mt-2'>Signup</button> 
+          <button className='h-10 w-full bg-black rounded-lg text-white font-bold hover:bg-[rgba(0,0,0,0.8)] transition-color duration-300 mt-2'>Signup</button>
         </form>
       </div>
     </div>

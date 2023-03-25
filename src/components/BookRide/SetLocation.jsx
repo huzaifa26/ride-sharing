@@ -4,7 +4,7 @@ import { API_URL } from '../Utils/const';
 import { ReactSearchAutocomplete } from 'react-search-autocomplete'
 import AutoComplete from './AutoComplete';
 
-export default function SetLocation() {
+export default function SetLocation({getLocations}) {
   const [pickup, setPickup] = useState(null);
   const [dropOff, setDropOFf] = useState(null);
 
@@ -21,7 +21,7 @@ export default function SetLocation() {
       <div className='flex flex-col gap-4 mt-4'>
         <AutoComplete key={useId()} getValues={getpickup}/>
         <AutoComplete key={useId()} getValues={getdropOff}/>
-        <button style={pickup === null || dropOff === null?{cursor:"not-allowed",opacity:"0.5"}:{}} disabled={pickup === null || dropOff === null} className='h-10 w-full bg-black rounded-lg text-white font-bold hover:bg-[rgba(0,0,0,0.8)] transition-color duration-300'>Search</button>
+        <button onClick={()=>getLocations(pickup,dropOff)} style={pickup === null || dropOff === null?{cursor:"not-allowed",opacity:"0.5"}:{}} disabled={pickup === null || dropOff === null} className='h-10 w-full bg-black rounded-lg text-white font-bold hover:bg-[rgba(0,0,0,0.8)] transition-color duration-300'>Search</button>
       </div>
     </div>
   )

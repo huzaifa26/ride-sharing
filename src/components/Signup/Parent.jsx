@@ -15,9 +15,7 @@ export default function Parent() {
     },
     onSuccess: () => {
       toast.success("Signup successful. Redirecting to login page.");
-      setTimeout(() => {
-        navigate("/");
-      }, 3000);
+      navigate("/");
     },
     onError: (error) => {
       console.log(error)
@@ -40,6 +38,7 @@ export default function Parent() {
       password: formRef.current.password.value,
       userType: "Parent",
       isProfileCompleted: true,
+      isAvailable: false
     }
     signupParentMutation.mutate(data);
   };
