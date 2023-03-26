@@ -6,6 +6,7 @@ import Parent from "./components/Signup/Parent"
 import Type from "./components/Signup/Type"
 import Protected from "./components/Utils/Protected"
 import BookRide from "./pages/BookRide"
+import DriverRide from "./pages/DriverRide"
 import Login from "./pages/Login"
 import Signup from "./pages/Signup"
 
@@ -24,6 +25,7 @@ function App() {
             <Route path="/" element={<Protected />}>
               <Route path="complete-profile" element={<CompleteProfile />}></Route>
               <Route path="book-ride" element={<BookRide />}></Route>
+              <Route path="rides" element={<DriverRide />}></Route>
             </Route>
           </Route>
         </Routes>

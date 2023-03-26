@@ -40,6 +40,7 @@ export default function BookRide() {
 
     // Handler for receiving rideRequestAccepted messages
     socket.on('rideRequestAccepted', (data) => {
+      alert(data.isAccepted)
       console.log("*****************************")
     });
     console.log("1111111111111111111")

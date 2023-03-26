@@ -15,14 +15,18 @@ export default function Login() {
       return axios.post(API_URL + "login-user/", data)
     },
     onSuccess: (res) => {
-      localStorage.setItem("user",JSON.stringify(res.data.user));
+      localStorage.setItem("user", JSON.stringify(res.data.user));
       queryClient.setQueryData(["user"], res.data.user);
       toast.success(res.data.message);
-      if(res.data.user.userType === "Driver" && res.data.user.isProfileCompleted === false){
+      if (res.data.user.userType === "Driver" && res.data.user.isProfileCompleted === false) {
         navigate("/complete-profile");
         return
       }
-      navigate("/book-ride");
+      if (res.data.user.userType === "Driver") {
+        navigate("/rides");
+      } else if (res.data.user.userType === "Parent"){
+        navigate("/book-ride");
+      }
     },
     onError: (error) => {
       console.log(error)
