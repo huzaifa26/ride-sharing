@@ -6,15 +6,27 @@ import SetLocation from '../components/BookRide/SetLocation'
 import { API_URL } from '../components/Utils/const';
 import io from 'socket.io-client';
 
-
 export default function BookRide() {
   const queryClient = useQueryClient();
+  const user = queryClient.getQueryData(["user"])
+
+  const activeRides = useQuery(["active-rides"], fetchActiveRides);
   const { isLoading, isError, data, error } = useQuery(["drivers"], fetchDrivers, { enable: false });
-  const [location, setLocation] = useState({})
+
+  const [location, setLocation] = useState({ pickup: null, dropoff: null });
+
   async function fetchDrivers() {
-    return axios.get(API_URL + "drivers")
+    return axios.get(API_URL + "drivers/" + queryClient.getQueryData(['user'])?.id)
       .then((response) => {
         console.log(response.data)
+        return response.data
+      })
+      .then((data) => data);
+  }
+
+  async function fetchActiveRides() {
+    return axios.get(API_URL + "active-rides/" + queryClient.getQueryData(["user"]).id)
+      .then((response) => {
         return response.data
       })
       .then((data) => data);
@@ -25,7 +37,6 @@ export default function BookRide() {
     queryClient.invalidateQueries(["drivers"]);
   }
 
-  const user = queryClient.getQueryData(["user"])
   const [socket, setSocket] = useState(null);
   const [roomId, setRoomId] = useState(null);
 
@@ -40,26 +51,36 @@ export default function BookRide() {
 
     // Handler for receiving rideRequestAccepted messages
     socket.on('rideRequestAccepted', (data) => {
-      alert(data.isAccepted)
-      console.log("*****************************")
+      queryClient.invalidateQueries(["active-rides"]);
     });
-    console.log("1111111111111111111")
 
     return () => {
       if (socket) {
-        console.log("222222222222222222")
         socket.emit('leaveRoom', roomId);
         socket.disconnect();
       }
     };
   }, [user?.id]);
 
+  console.log(activeRides?.data);
+
   return (
-    <div className='w-full min-h-[calc(100vh-64px)] px-[6%] flex'>
-      <div className='w-[30%]'>
-        <SetLocation getLocations={getLocations} />
-      </div>
-      <div className='w-[70%] p-4'>{data?.length === 0 ? "Search Rides to see results" : <Drivers location={location} data={data} />}</div>
-    </div>
+    <>
+      {
+        activeRides.isLoading ?
+          <img className='w-[70px] m-auto' src='/BlackLoading.svg' /> :
+          activeRides?.data?.length !== 0 ?
+            <div>active rides</div>
+            :
+            <div className='w-full min-h-[calc(100vh-64px)] px-[6%] flex gap-2'>
+              <div className='w-[30%] mt-2'>
+                <SetLocation getLocations={getLocations} />
+              </div>
+              {location.dropoff === null && location.pickup === null ? <p className='mt-4 ml-4'>Search Rides to see results</p> :
+                <div className='w-[70%] p-4'>{<Drivers location={location} data={data} />}</div>
+              }
+            </div>
+      }
+    </>
   )
 }
