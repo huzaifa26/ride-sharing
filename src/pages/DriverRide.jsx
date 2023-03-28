@@ -40,7 +40,6 @@ export default function DriverRide() {
   async function fetchData() {
     return axios.get(API_URL + "driver-rides/" + queryClient.getQueryData(['user']).id)
       .then((response) => {
-        console.log(response.data);
         let newRides = []
         let activeRides = []
         response.data.forEach((d) => {

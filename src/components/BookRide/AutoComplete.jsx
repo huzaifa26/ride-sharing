@@ -2,10 +2,10 @@ import axios from 'axios'
 import React, { useEffect, useId, useRef, useState } from 'react'
 import { API_URL } from '../Utils/const'
 
-export default function AutoComplete({getValues}) {
+export default function AutoComplete({getValues,place}) {
 
   const [suggestion, setSuggestion] = useState([])
-  const [pickup, setPickup] = useState(null);
+  const [pickup, setPickup] = useState(place || null);
   const inputRef=useRef()
 
   const getPlaces = (place) => {

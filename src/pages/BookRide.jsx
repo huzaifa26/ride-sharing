@@ -11,18 +11,28 @@ export default function BookRide() {
   const user = queryClient.getQueryData(["user"])
 
   const activeRides = useQuery(["active-rides"], fetchActiveRides);
-  const { isLoading, isError, data, error } = useQuery(["drivers"], fetchDrivers, { enable: false });
+  const { isLoading, isError, data, error,refetch } = useQuery(["drivers"], fetchDrivers, { enable: false });
 
   const [location, setLocation] = useState({ pickup: null, dropoff: null });
 
   async function fetchDrivers() {
+    if(queryClient.getQueryData(['user'])?.id === undefined){
+      return []
+    }
     return axios.get(API_URL + "drivers/" + queryClient.getQueryData(['user'])?.id)
       .then((response) => {
-        console.log(response.data)
+        console.log(response.data[0].DriverRides)
+        if (response.data[0].DriverRides.length > 0) {
+          setLocation({ pickup: response.data[0].DriverRides[0].pickup, dropoff: response.data[0].DriverRides[0].dropoff })
+        }
         return response.data
       })
       .then((data) => data);
   }
+
+  useEffect(()=>{
+    refetch()
+  },[queryClient.getQueryData(['user'])?.id])
 
   async function fetchActiveRides() {
     return axios.get(API_URL + "active-rides/" + queryClient.getQueryData(["user"]).id)
@@ -46,12 +56,14 @@ export default function BookRide() {
     setSocket(socket);
 
     // Join the room with the user ID as the room ID
-    socket.emit('joinRideRoom', user?.id);
-    setRoomId(user?.id);
+    socket.emit('joinRideRoom', queryClient.getQueryData(["user"])?.id);
+    setRoomId(queryClient.getQueryData(["user"])?.id);
 
     // Handler for receiving rideRequestAccepted messages
     socket.on('rideRequestAccepted', (data) => {
       queryClient.invalidateQueries(["active-rides"]);
+      queryClient.invalidateQueries(["drivers"]);
+      setLocation({ pickup: null, dropoff: null });
     });
 
     return () => {
@@ -60,9 +72,7 @@ export default function BookRide() {
         socket.disconnect();
       }
     };
-  }, [user?.id]);
-
-  console.log(activeRides?.data);
+  }, [queryClient.getQueryData(["user"])?.id]);
 
   return (
     <>
@@ -74,7 +84,7 @@ export default function BookRide() {
             :
             <div className='w-full min-h-[calc(100vh-64px)] px-[6%] flex gap-2'>
               <div className='w-[30%] mt-2'>
-                <SetLocation getLocations={getLocations} />
+                <SetLocation location={location} getLocations={getLocations} />
               </div>
               {location.dropoff === null && location.pickup === null ? <p className='mt-4 ml-4'>Search Rides to see results</p> :
                 <div className='w-[70%] p-4'>{<Drivers location={location} data={data} />}</div>

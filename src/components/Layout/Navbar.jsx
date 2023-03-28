@@ -26,9 +26,17 @@ export default function Navbar() {
   return (
     <div className='w-full'>
       <div className='bg-black text-white h-16 px-[6%] flex items-center justify-between relative'>
-        <Link to={"/"}>
-          <h1 className='text-xl font-bold'>RideSharing</h1>
-        </Link>
+        <h1 className='text-xl font-bold cursor-pointer' onClick={() => {
+          if((location.pathname.includes("/book-ride") || location.pathname.includes("/ride") || location.pathname.includes("/history-page")) && queryClient.getQueryData(['user'])?.userType === "Parent"){
+            navigate("/book-ride");
+            return
+          }
+          if((location.pathname.includes("/book-ride") || location.pathname.includes("/ride") || location.pathname.includes("/history-page")) && queryClient.getQueryData(['user'])?.userType === "Driver"){
+            navigate("/rides");
+            return
+          }
+          navigate("/")
+        }} >RideSharing</h1>
         {
           location.pathname === "/" &&
           <button className='w-20 bg-white text-black h-8 rounded-lg hover:bg-[rgba(255,255,255,0.9)] transition-color duration-300'>Sign up</button>
@@ -38,7 +46,7 @@ export default function Navbar() {
           <button className='w-20 bg-white text-black h-8 rounded-lg hover:bg-[rgba(255,255,255,0.9)] transition-color duration-300'>Login</button>
         }
 
-        {(location.pathname.includes("/book-ride") || location.pathname.includes("/ride")) &&
+        {(location.pathname.includes("/book-ride") || location.pathname.includes("/ride") || location.pathname.includes("/history-page")) &&
           <div className='flex items-center justify-center gap-2 relative group cursor-pointer py-2'>
             <div className='border-2 border-white rounded-full p-2'>
               <FaUser className='text-lg' />
@@ -50,7 +58,7 @@ export default function Navbar() {
             <TbTriangleInvertedFilled className='text-sm' />
             <ul className='group-hover:max-h-[1000px] top-full max-h-0 overflow-hidden absolute transition-all duration-300 flex flex-col bg-white text-black divide-y-2 shadow-md rounded-sm'>
               <li className='p-6 py-4 pr-24 hover:bg-[#d7d7d750] flex items-center gap-2 text-[16px] font-[500]'><ImProfile className="text-lg" />Profile</li>
-              <li className='p-6 py-4 pr-24 hover:bg-[#d7d7d750] flex items-center gap-2 text-[16px] font-[500]'><FaHistory className="text-lg" />History</li>
+              <li onClick={() => navigate("/history-page")} className='p-6 py-4 pr-24 hover:bg-[#d7d7d750] flex items-center gap-2 text-[16px] font-[500]'><FaHistory className="text-lg" />History</li>
               <li onClick={() => logoutHandler()} className='p-6 py-4 pr-24 hover:bg-[#d7d7d750] flex items-center gap-2 text-[16px] font-[500]'><BiLogOut className="text-lg" />Logout</li>
             </ul>
           </div>
