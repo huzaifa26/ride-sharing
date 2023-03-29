@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {BiErrorCircle} from "react-icons/bi"
+import { BiErrorCircle } from "react-icons/bi"
 
 export default function Type() {
   const navigate = useNavigate();
@@ -16,29 +16,31 @@ export default function Type() {
       navigate("/signup/driver");
     } else if (!signupType) {
       setShowErrorMessage(true);
-      setTimeout(()=>{
+      setTimeout(() => {
         setShowErrorMessage(false);
-      },3000)
+      }, 3000)
     }
   }
 
   return (
-    <div className='h-[calc(100vh-64px)]  flex justify-center items-center flex-col'>
-      <div className='w-80 mb-[100px]'>
-        <h1 className='text-2xl font-[400] py-4'>Choose account type.</h1>
-        <div className='flex flex-col gap-4 relative'>
-          <select onChange={(e) => setSignupType(e.target.value)} className='w-full h-10 text-[16px] rounded-lg bg-[#EEEEEE] p-2'>
-            <option selected disabled value={null}>Account type</option>
-            <option value={"Parent"}>Sign up to book a ride.</option>
-            <option value={"Driver"}>Sign up to drive.</option>
-          </select>
-          {showErrorMessage &&
-          <div className='flex items-center gap-[5px] absolute top-[40px]'>
-            <BiErrorCircle className='text-[red] '/>
-            <p className='text-[red] text-[14px] '>You have not selected any option.</p>
+    <div className='backgroundImage h-[calc(100vh-64px)]'>
+      <div className='w-full h-full backdrop-blur-[4px] flex justify-center items-center flex-col'>
+        <div className='min-w-[320px] w-[22.786458333333332vw] xsm:mb-[0px] mb-[100px] bg-white rounded-md p-8 py-12'>
+          <h1 className='text-2xl font-[400] py-4'>Choose account type.</h1>
+          <div className='flex flex-col gap-4 relative'>
+            <select onChange={(e) => setSignupType(e.target.value)} className='w-full h-10 text-[16px] rounded-lg bg-[#EEEEEE] p-2'>
+              <option selected disabled value={null}>Account type</option>
+              <option value={"Parent"}>Sign up to book a ride.</option>
+              <option value={"Driver"}>Sign up to drive.</option>
+            </select>
+            {showErrorMessage &&
+              <div className='flex items-center gap-[5px] absolute top-[40px]'>
+                <BiErrorCircle className='text-[red] ' />
+                <p className='text-[red] text-[14px] '>You have not selected any option.</p>
+              </div>
+            }
+            <button onClick={signuptypeHandler} className='h-10 w-full bg-black rounded-lg text-white font-bold hover:bg-[rgba(0,0,0,0.8)] transition-color duration-300 mt-4'>Continue</button>
           </div>
-          }
-          <button onClick={signuptypeHandler} className='h-10 w-full bg-black rounded-lg text-white font-bold hover:bg-[rgba(0,0,0,0.8)] transition-color duration-300 mt-4'>Continue</button>
         </div>
       </div>
     </div>

@@ -3,7 +3,8 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { io } from 'socket.io-client';
 import ChatModal from '../Chat/ChatModal';
-import { API_URL } from '../Utils/const';
+import { API_URL, transformDate } from '../Utils/const';
+import { colorsObj } from '../Utils/const';
 
 export default function DriverCard({ driver, location }) {
   const queryClient = useQueryClient()
@@ -93,8 +94,10 @@ export default function DriverCard({ driver, location }) {
 
     // Handler for receiving rideRequestAccepted messages
     socket.on('message', (data) => {
-      localStorage.setItem(driver.id, true);
-      setShowNew(true);
+      if(+data.senderId === +driver.id){
+        localStorage.setItem(driver.id, true);
+        setShowNew(true);
+      }
     });
 
     return () => {
@@ -105,29 +108,58 @@ export default function DriverCard({ driver, location }) {
     };
   }, [queryClient.getQueryData(["user"])?.id]);
 
-  const [showNew, setShowNew] = useState(localStorage.getItem(driver.id) === "true" ?true:false);
+  const removeNewMessage=()=>{
+    localStorage.removeItem(driver.id);
+    setShowNew(false);
+  }
+
+  const [showNew, setShowNew] = useState(localStorage.getItem(driver.id) === "true" ? true : false);
 
   return (
     <>
-      {openChatModal && conversationMutation?.data && <ChatModal acceptedBy={driver.id} conversation={conversationMutation?.data?.data} hideModal={hideModal} />}
+      {openChatModal && conversationMutation?.data && <ChatModal removeNewMessage={removeNewMessage} acceptedBy={driver.id} conversation={conversationMutation?.data?.data} hideModal={hideModal} />}
       <div className='w-[60%] min-h-48 shadow rounded-md p-2 min-w-[300px]'>
-        <h1 className='text-lg'><span className='font-[500] text-lg'>Name: </span> {driver.fullName}</h1>
-        <p className='text-md'><span className='font-[500] text-lg'>Email: </span> {driver.email}</p>
-        <p className='text-md'><span className='font-[500] text-lg'>Phone Number: </span> {driver.phoneNumber}</p>
-        <p className='text-md'><span className='font-[500] text-lg'>Car: </span>{driver.carName + " " + driver.carModel}</p>
-        <p className='text-md'><span className='font-[500] text-lg'>Car registeration: </span> {driver.carRegisteration}</p>
+        <div className='flex justify-between items-center w-full'>
+          <div className='flex gap-[5px] my-2 '>
+            <div style={{ background: colorsObj[driver.fullName[0].toLowerCase()] }} className='w-[50px] h-[50px] rounded-full text-white flex justify-center items-center text-xl font-[700]'>{driver.fullName[0]}</div>
+            <div>
+              <h1 className='text-lg font-[500]'>{driver.fullName}</h1>
+              <p className='text-sm font-[400]'> {driver.email}</p>
+            </div>
+          </div>
+          <div className='relative z-10'>
+            {driver.DriverRides.length > 0 &&
+              <button onClick={() => { conversationHandler(); setOpenChatModal(true); setShowNew(false); localStorage.removeItem(driver.id) }} className='relative h-9 mt-2 min-w-[80px] w-[6vw] bg-black rounded-lg text-white font-bold hover:bg-[rgba(0,0,0,0.8)] transition-color duration-300'>Chat</button>
+            }
+            {driver.DriverRides.length > 0 && showNew === true && <p className='absolute top-[10px] right-[1px] max-w-[10px] min-w-[10px] w-[10px] h-[10px] rounded-full max-h-[10px] min-h-[10px] bg-[#ff2626]'></p>}
+          </div>
 
+        </div>
+        <div className='my-2'>
+          <label className='font-[600] text-[18px]'>Phone Number </label>
+          <p className='text-md'> {driver.phoneNumber}</p>
+        </div>
+        <div className='my-2'>
+          <label className='font-[600] text-[18px]'>Car </label>
+          <p className='text-md'>{driver.carName + " " + driver.carModel}</p>
+        </div>
+        <div className='my-2'>
+          <label className='font-[600] text-[18px]'>Car registeration </label>
+          <p className='text-md'> {driver.carRegisteration}</p>
+        </div>
+        {driver.DriverRides.length > 0 &&
+          <div className='my-2'>
+            <label className='font-[600] text-[18px]'>Created Time</label>
+            <p className='text-md'> {transformDate(driver?.DriverRides[0].createdAt)}</p>
+          </div>
+        }
         <div className='flex gap-2'>
           {driver.DriverRides.length === 0 &&
             <button onClick={() => bookRideHandler()} className='h-9 mt-2 w-[30%] bg-black rounded-lg text-white font-bold hover:bg-[rgba(0,0,0,0.8)] transition-color duration-300'>Book</button>
           }
           {driver.DriverRides.length > 0 &&
-            <button onClick={() => { cancelRideHandler() }} className='h-9 mt-2 w-[30%] bg-black rounded-lg text-white font-bold hover:bg-[rgba(0,0,0,0.8)] transition-color duration-300'>Cancel Request</button>
+            <button onClick={() => { cancelRideHandler() }} className='h-9 my-2 min-w-[150px] w-[10vw] bg-black rounded-lg text-white font-bold hover:bg-[rgba(0,0,0,0.8)] transition-color duration-300'>Cancel Request</button>
           }
-          {driver.DriverRides.length > 0 &&
-            <button onClick={() => { conversationHandler(); setOpenChatModal(true); setShowNew(false); }} className='h-9 mt-2 w-[26%] bg-black rounded-lg text-white font-bold hover:bg-[rgba(0,0,0,0.8)] transition-color duration-300'>Chat</button>
-          }
-          {showNew === true && <p>new message</p>}
         </div>
       </div>
     </>

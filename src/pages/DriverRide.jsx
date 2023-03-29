@@ -22,12 +22,10 @@ export default function DriverRide() {
       socket.on('rideRequest', (data) => {
         queryClient.invalidateQueries(["driver-rides"]);
       });
-      console.log("connected")
     }catch(error){
       console.log(error);
     }
     
-
     return () => {
       if (socket) {
         socket.emit('leaveRoom', roomId);
@@ -38,7 +36,8 @@ export default function DriverRide() {
 
   const driverRideQuery = useQuery(["driver-rides"], fetchData);
   async function fetchData() {
-    return axios.get(API_URL + "driver-rides/" + queryClient.getQueryData(['user']).id)
+    if(queryClient.getQueryData(['user'])?.id === undefined) return
+    return axios.get(API_URL + "driver-rides/" + queryClient.getQueryData(['user'])?.id)
       .then((response) => {
         let newRides = []
         let activeRides = []
@@ -49,7 +48,6 @@ export default function DriverRide() {
             activeRides.push(d);
           }
         })
-        console.log({ newRides, activeRides })
         return { newRides, activeRides }
       })
       .catch((error) => {
@@ -57,22 +55,21 @@ export default function DriverRide() {
         return []
       })
   }
-  console.log(driverRideQuery.data);
 
   return (
-    <>
-      <div className='w-[86%] my-2 mb-10 m-auto space-y-4'>
+    <div className='flex w-[86%] xsm:w-[100%] sm:w-[100%] md:w-[100%] xsm:flex-col sm:flex-col m-auto'>
+      <div className='flex-1 xsm:min-w-[300px] sm:min-w-[350px] my-2 mb-10 m-auto space-y-4'>
         <h1 className='text-2xl font-[500]'>New Ride: </h1>
         {driverRideQuery.data?.newRides.length === 0 ? <p>No new rides at this moment.</p> : driverRideQuery.data?.newRides?.map((data) => {
           return <DriverRideCard data={data} />
         })}
       </div>
-      <div className='w-[86%] mt-2 m-auto space-y-4'>
+      <div className='flex-1 xsm:min-w-[300px] sm:min-w-[350px] mt-2 m-auto space-y-4'>
         <h1 className='text-2xl font-[500]'>Active Ride: </h1>
-        {driverRideQuery.data?.activeRides.length === 0 ? <p>No new rides at this moment.</p> : driverRideQuery.data?.activeRides?.map((data) => {
+        {driverRideQuery.data?.activeRides.length === 0 ? <p>No active rides at this moment.</p> : driverRideQuery.data?.activeRides?.map((data) => {
           return <DriverRideCard data={data} />
         })}
       </div>
-    </>
+    </div>
   )
 }

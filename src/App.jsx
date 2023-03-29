@@ -9,6 +9,7 @@ import BookRide from "./pages/BookRide"
 import DriverRide from "./pages/DriverRide"
 import HistoryPage from "./pages/HistoryPage"
 import Login from "./pages/Login"
+import Profile from "./pages/Profile"
 import Signup from "./pages/Signup"
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
               <Route path="book-ride" element={<BookRide />}></Route>
               <Route path="rides" element={<DriverRide />}></Route>
               <Route path="history-page" element={<HistoryPage />}></Route>
+              <Route path="profile" element={<Profile />}></Route>
             </Route>
           </Route>
         </Routes>

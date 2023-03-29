@@ -6,8 +6,9 @@ import { AiOutlineSend } from 'react-icons/ai';
 import moment from "moment-timezone";
 import { toast } from 'react-toastify';
 import io from 'socket.io-client';
+import { ImCross } from 'react-icons/im';
 
-export default function ChatModal({ hideModal, conversation, acceptedBy }) {
+export default function ChatModal({ hideModal, conversation, acceptedBy,removeNewMessage }) {
   const scrollRef = useRef();
   const [message, setMessage] = useState("");
   const queryClient = useQueryClient();
@@ -38,7 +39,6 @@ export default function ChatModal({ hideModal, conversation, acceptedBy }) {
       return axios.post(API_URL + "message", newData);
     },
     onSuccess: (res) => {
-      toast.success("Message sent");
       queryClient.invalidateQueries(["message"]);
       messageQuery.refetch();
     },
@@ -92,20 +92,20 @@ export default function ChatModal({ hideModal, conversation, acceptedBy }) {
   }, [messageQuery.data])
 
   return (
-    <div onClick={hideModal} className='w-[100%] !p-0 !m-0 h-[100vh] backdrop-blur-md bg-[rgba(0,0,0,0.5)] absolute top-0 left-0 flex justify-center items-center'>
-      <div onClick={(e) => { e.stopPropagation() }} className='w-[60%] h-[80%] bg-white rounded-md divide-y-2 flex flex-col'>
-        <div className='w-full h-14 flex items-center'>
+    <div onClick={()=>{removeNewMessage();hideModal()}} className='w-[100%] !p-0 fixed !m-0 h-[100vh] backdrop-blur-md bg-[rgba(0,0,0,0.5)] top-0 z-[100] left-0 flex justify-center items-center'>
+      <div onClick={(e) => { e.stopPropagation() }} className='w-[60%] xsm:w-[95%] sm:w-[90%] h-[80%]  bg-white rounded-md divide-y-2 flex flex-col'>
+        <div className='w-full h-14 flex items-center justify-between'>
           <h2 className='p-2'>Chat</h2>
+          <ImCross onClick={()=>{removeNewMessage();hideModal()}} className='cursor-pointer mr-[20px] text-2xl'/>
         </div>
         <div className='flex-1 flex flex-col w-full overflow-auto divide-y-2'>
           <div className='flex-1 '>
             {messageQuery.isLoading ? <img className='w-[50px] m-auto' src='/BlackLoading.svg' /> :
               <>
                 {messageQuery?.data?.map((m) => {
-                  console.log(m.senderId === queryClient.getQueryData(["user"]).id)
                   return (
                     <div key={m.id} style={m.senderId === queryClient.getQueryData(["user"]).id ? { alignItems: "end" } : {}} className={'flex flex-col'}>
-                      <div className="flex max-w-[40%] bg-[aqua] px-4 py-2 rounded-md m-2 mb-0">
+                      <div style={m.senderId === queryClient.getQueryData(["user"]).id ? {background:"black",color:"white" } : {background:"#EEEEEE",color:"black"}} className="flex max-w-[40%] min-w-[290px]  bg-[aqua] px-4 py-2 rounded-md m-2 mb-0">
                         <p className="">{m.content}</p>
                       </div>
                       <p className="m-2 text-[12px] pl-4 mt-0">{moment(m.createdAt).fromNow()}</p>
