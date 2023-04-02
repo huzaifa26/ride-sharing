@@ -147,6 +147,10 @@ export default function DriverCard({ driver, location }) {
           <label className='font-[600] text-[18px]'>Car registeration </label>
           <p className='text-md'> {driver.carRegisteration}</p>
         </div>
+        <div className='my-2'>
+          <label className='font-[600] text-[18px]'>Total Passengers </label>
+          <p className='text-md'> {driver.totalPassenger}</p>
+        </div>
         {driver.DriverRides.length > 0 &&
           <div className='my-2'>
             <label className='font-[600] text-[18px]'>Created Time</label>

@@ -26,7 +26,10 @@ export default function DriverRideCard({ data }) {
     let newData = {
       id: data.id,
       isAccepted: accepted,
-      acceptedBy: data.parentId
+      acceptedBy: data.parentId,
+      uId:queryClient.getQueryData(['user']).id,
+      passengers:data.passengers,
+      totalPassenger:queryClient.getQueryData(['user']).totalPassenger,
     }
     rideActionMutation.mutate(newData);
   }
@@ -46,7 +49,10 @@ export default function DriverRideCard({ data }) {
   const markRideAsComplete = () => {
     let newData = {
       id: data.id,
-      acceptedBy: data.parentId
+      acceptedBy: data.parentId,
+      passengers:data.passengers,
+      uId:queryClient.getQueryData(['user']).id,
+      totalPassenger:queryClient.getQueryData(['user']).totalPassenger
     }
     markRideAsCompleteMutation.mutate(newData);
   }
