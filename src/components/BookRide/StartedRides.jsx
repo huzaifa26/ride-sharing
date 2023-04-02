@@ -70,6 +70,7 @@ export default function StartedRides({ data }) {
 
   const [showNew, setShowNew] = useState(localStorage.getItem(data.driver.id) === "true" ? true : false);
 
+
   return (
     <>
       {openChatModal && <ChatModal acceptedBy={data.driver.id} removeNewMessage={removeNewMessage} conversation={conversationMutation?.data?.data} hideModal={hideModal} />}
@@ -95,6 +96,10 @@ export default function StartedRides({ data }) {
         <div className='my-2'>
           <label className='font-[600] text-[18px]'>Drop off</label>
           <p className='text-md'> {data.dropoff}</p>
+        </div>
+        <div className='my-2'>
+          <label className='font-[600] text-[18px]'>Passengers</label>
+          <p className='text-md'> {data.passengers}</p>
         </div>
         <div className='my-2'>
           <label className='font-[600] text-[18px]'>Created Time</label>

@@ -39,11 +39,11 @@ export default function Navbar() {
         }} >RideSharing</h1>
         {
           location.pathname === "/" &&
-          <button className='w-20 bg-white text-black h-8 rounded-lg hover:bg-[rgba(255,255,255,0.9)] transition-color duration-300'>Sign up</button>
+          <button onClick={()=>navigate("/signup")} className='w-20 bg-white text-black h-8 rounded-lg hover:bg-[rgba(255,255,255,0.9)] transition-color duration-300'>Sign up</button>
         }
         {
           location.pathname.includes("/signup") &&
-          <button className='w-20 bg-white text-black h-8 rounded-lg hover:bg-[rgba(255,255,255,0.9)] transition-color duration-300'>Login</button>
+          <button onClick={()=>navigate("/")} className='w-20 bg-white text-black h-8 rounded-lg hover:bg-[rgba(255,255,255,0.9)] transition-color duration-300'>Login</button>
         }
 
         {(location.pathname.includes("/book-ride") || location.pathname.includes("/ride") || location.pathname.includes("/history-page") || location.pathname.includes("/profile")) &&
@@ -58,12 +58,12 @@ export default function Navbar() {
             <ul className='group-hover:max-h-[1000px] z-[1000] top-full max-h-0 overflow-hidden absolute transition-all duration-300 flex flex-col bg-white text-black divide-y-2 shadow-md rounded-sm'>
               <li onClick={() => navigate("/profile")} className='p-6 py-4 pr-24 hover:bg-[#d7d7d750] flex items-center gap-2 text-[16px] font-[500]'><ImProfile className="text-lg" />Profile</li>
               <li onClick={() => navigate("/history-page")} className='p-6 py-4 pr-24 hover:bg-[#d7d7d750] flex items-center gap-2 text-[16px] font-[500]'><FaHistory className="text-lg" />History</li>
-              {user?.userType === "Driver" &&
+              {/* {user?.userType === "Driver" &&
                 <>
                   <li onClick={() => navigate("/")} className='p-6 py-4 pr-24 hover:bg-[#d7d7d750] flex items-center gap-2 text-[16px] font-[500]'><FaHistory className="text-lg" />Avalable</li>
                   <li onClick={() => navigate("/")} className='p-6 py-4 pr-24 hover:bg-[#d7d7d750] flex items-center gap-2 text-[16px] font-[500]'><FaHistory className="text-lg" />Unavailable</li>
                 </>
-              }
+              } */}
               <li onClick={() => logoutHandler()} className='p-6 py-4 pr-24 hover:bg-[#d7d7d750] flex items-center gap-2 text-[16px] font-[500]'><BiLogOut className="text-lg" />Logout</li>
             </ul>
           </div>

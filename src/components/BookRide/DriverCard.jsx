@@ -27,11 +27,11 @@ export default function DriverCard({ driver, location }) {
     let data = {
       pickup: location.pickup,
       dropoff: location.dropoff,
+      passengers:location.passengers,
       isCompleted: false,
       driverId: driver.id,
       parentId: user.id,
     }
-    console.log(data);
     bookRideMutation.mutate(data);
   }
 

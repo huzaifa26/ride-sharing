@@ -9,13 +9,13 @@ import StartedRides from '../components/BookRide/StartedRides';
 
 export default function BookRide() {
   const queryClient = useQueryClient();
-  const user = queryClient.getQueryData(["user"])
+  const user = queryClient.getQueryData(["user"]);
 
   const startedRides = useQuery(["started-rides"], fetchStartedRides);
   const activeRides = useQuery(["active-rides"], fetchActiveRides);
   const { isLoading, isError, data, error, refetch } = useQuery(["drivers"], fetchDrivers, { enable: false });
 
-  const [location, setLocation] = useState({ pickup: null, dropoff: null });
+  const [location, setLocation] = useState({ pickup: null, dropoff: null,passengers:null });
 
   async function fetchDrivers() {
     if (queryClient.getQueryData(['user'])?.id === undefined) {
@@ -24,7 +24,7 @@ export default function BookRide() {
     return axios.get(API_URL + "drivers/" + queryClient.getQueryData(['user'])?.id)
       .then((response) => {
         if (response.data[0].DriverRides.length > 0) {
-          setLocation({ pickup: response.data[0].DriverRides[0].pickup, dropoff: response.data[0].DriverRides[0].dropoff })
+          setLocation({ pickup: response.data[0].DriverRides[0].pickup, dropoff: response.data[0].DriverRides[0].dropoff, passengers: response.data[0].DriverRides[0].passengers })
         }
         return response.data
       })
@@ -50,8 +50,8 @@ export default function BookRide() {
       .then((data) => data);
   }
 
-  const getLocations = (pickup, dropoff) => {
-    setLocation({ pickup, dropoff });
+  const getLocations = (pickup, dropoff,passengers) => {
+    setLocation({ pickup, dropoff,passengers });
     queryClient.invalidateQueries(["drivers"]);
   }
 
@@ -82,6 +82,8 @@ export default function BookRide() {
       }
     };
   }, [queryClient.getQueryData(["user"])?.id]);
+
+  console.log(location)
 
   return (
     <>

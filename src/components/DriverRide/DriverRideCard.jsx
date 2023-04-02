@@ -136,6 +136,10 @@ export default function DriverRideCard({ data }) {
           <p className='text-md'> {data.dropoff}</p>
         </div>
         <div className='my-2'>
+          <label className='font-[600] text-[18px]'>Passengers</label>
+          <p className='text-md'> {data.passengers}</p>
+        </div>
+        <div className='my-2'>
           <label className='font-[600] text-[18px]'>Created Time</label>
           <p className='text-md'> {transformDate(data?.createdAt)}</p>
         </div>
