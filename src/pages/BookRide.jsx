@@ -77,7 +77,6 @@ export default function BookRide() {
 
     
     socket.on('rideRequestAccepted', (data) => {
-      alert(1);
       queryClient.invalidateQueries(["drivers"]);
       queryClient.invalidateQueries(["active-rides"]);
       queryClient.invalidateQueries(["started-rides"]);
