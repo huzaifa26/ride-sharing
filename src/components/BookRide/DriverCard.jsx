@@ -27,7 +27,7 @@ export default function DriverCard({ driver, location }) {
     let data = {
       pickup: location.pickup,
       dropoff: location.dropoff,
-      passengers:location.passengers,
+      passengers: location.passengers,
       isCompleted: false,
       driverId: driver.id,
       parentId: user.id,
@@ -84,17 +84,14 @@ export default function DriverCard({ driver, location }) {
   const [roomId, setRoomId] = useState(null);
 
   useEffect(() => {
-    // Connect to the server and create a Socket.IO instance
     const socket = io('http://localhost:5001');
     setSocket(socket);
 
-    // Join the room with the user ID as the room ID
     socket.emit('joinRideRoom', queryClient.getQueryData(["user"])?.id);
     setRoomId(queryClient.getQueryData(["user"])?.id);
 
-    // Handler for receiving rideRequestAccepted messages
     socket.on('message', (data) => {
-      if(+data.senderId === +driver.id){
+      if (+data.senderId === +driver.id) {
         localStorage.setItem(driver.id, true);
         setShowNew(true);
       }
@@ -108,7 +105,7 @@ export default function DriverCard({ driver, location }) {
     };
   }, [queryClient.getQueryData(["user"])?.id]);
 
-  const removeNewMessage=()=>{
+  const removeNewMessage = () => {
     localStorage.removeItem(driver.id);
     setShowNew(false);
   }

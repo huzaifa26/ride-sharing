@@ -59,20 +59,28 @@ export default function BookRide() {
   const [roomId, setRoomId] = useState(null);
 
   useEffect(() => {
-    // Connect to the server and create a Socket.IO instance
     const socket = io('http://localhost:5001');
     setSocket(socket);
 
-    // Join the room with the user ID as the room ID
     socket.emit('joinRideRoom', queryClient.getQueryData(["user"])?.id);
     setRoomId(queryClient.getQueryData(["user"])?.id);
 
-    // Handler for receiving rideRequestAccepted messages
     socket.on('rideRequestAccepted', (data) => {
+      console.log(data);
+      if(data.isCompleted){
+        setLocation({ pickup: null, dropoff: null,passengers:null });
+      }
       queryClient.invalidateQueries(["drivers"]);
       queryClient.invalidateQueries(["started-rides"]);
       queryClient.invalidateQueries(["active-rides"]);
-      setLocation({ pickup: null, dropoff: null });
+    });
+
+    
+    socket.on('rideRequestAccepted', (data) => {
+      alert(1);
+      queryClient.invalidateQueries(["drivers"]);
+      queryClient.invalidateQueries(["active-rides"]);
+      queryClient.invalidateQueries(["started-rides"]);
     });
 
     return () => {
@@ -83,12 +91,10 @@ export default function BookRide() {
     };
   }, [queryClient.getQueryData(["user"])?.id]);
 
-  console.log(location)
-
   return (
     <>
       {
-        activeRides.isLoading ?
+        activeRides.isLoading || activeRides.isLoading || isLoading ?
           <img className='w-[70px] m-auto' src='/BlackLoading.svg' /> :
           activeRides?.data?.length !== 0 ?
             <div className='w-[86%] m-auto mt-4'>
@@ -103,7 +109,7 @@ export default function BookRide() {
               <div className='w-[30%] min-w-[300px] mt-2'>
                 <SetLocation location={location} getLocations={getLocations} />
               </div>
-              {location.dropoff === null && location.pickup === null ? <p className='mt-4 ml-4'>Search Rides to see results</p> :
+              {location.dropoff === null && location.pickup === null && location.passengers === null ? <p className='mt-4 ml-4'>Search Rides to see results</p> :
                 <div className='w-[70%] xsm:w-[100%] sm:w-[100%] p-4 xsm:px-[3%] sm:px-[3%]'>
                   <h1 className='text-2xl font-[500] my-2'>Active Drivers: </h1>
                   <Drivers location={location} data={data} />

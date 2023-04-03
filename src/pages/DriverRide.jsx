@@ -35,7 +35,7 @@ export default function DriverRide() {
   }, [queryClient.getQueryData(['user'])?.id]);
 
   const driverRideQuery = useQuery(["driver-rides"], fetchData, { enabled: true });
-  console.log(driverRideQuery.isLoading);
+
   async function fetchData() {
     if (queryClient.getQueryData(['user'])?.id === undefined) return []
     return axios.get(API_URL + "driver-rides/" + queryClient.getQueryData(['user'])?.id)
